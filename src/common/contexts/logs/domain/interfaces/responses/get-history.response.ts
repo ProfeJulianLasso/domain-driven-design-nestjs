@@ -1,6 +1,6 @@
-import { EventDomainEntity } from '../../../domain';
+import { EventDomainEntityBase } from '../../../domain';
 
-export interface IGetHistoryResponse<E extends EventDomainEntity> {
+export interface IGetHistoryResponse<E extends EventDomainEntityBase> {
   page?: number;
   length: number;
   dateTimeInit?: Date | number;

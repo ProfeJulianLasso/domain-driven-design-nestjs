@@ -4,15 +4,15 @@ import { ObjectValueException } from '../../../../libs/sofka';
 
 class EventEntity extends EventDomainEntityBase {}
 
-describe('EventDomainEntity', () => {
-  let eventDomainEntity: EventEntity;
+describe('EventDomainEntityBase', () => {
+  let eventDomainEntityBase: EventEntity;
 
   beforeEach(() => {
-    eventDomainEntity = new EventEntity({} as IEventDomainEntity);
+    eventDomainEntityBase = new EventEntity({} as IEventDomainEntity);
   });
 
   it('should be defined', () => {
-    expect(eventDomainEntity).toBeDefined();
+    expect(eventDomainEntityBase).toBeDefined();
   });
 
   it('should fail all validators', () => {
@@ -24,18 +24,18 @@ describe('EventDomainEntity', () => {
       eventName: '',
       payload: '',
     } as IEventDomainEntity;
-    eventDomainEntity = new EventEntity(data);
-    jest.spyOn(eventDomainEntity, 'getErrors');
-    jest.spyOn(eventDomainEntity, 'setErrors');
+    eventDomainEntityBase = new EventEntity(data);
+    jest.spyOn(eventDomainEntityBase, 'getErrors');
+    jest.spyOn(eventDomainEntityBase, 'setErrors');
 
     try {
       // Act
-      eventDomainEntity.validateData();
+      eventDomainEntityBase.validateData();
       expect(true).toBe(false);
     } catch (error) {
       // Assert
-      expect(eventDomainEntity.getErrors).toBeCalled();
-      expect(eventDomainEntity.setErrors).toBeCalledTimes(6);
+      expect(eventDomainEntityBase.getErrors).toBeCalled();
+      expect(eventDomainEntityBase.setErrors).toBeCalledTimes(6);
       expect(error).toBeInstanceOf(ObjectValueException);
       expect(error.message).toEqual('Hay algunos errores en la entidad Event');
       const errors = JSON.stringify(error);
@@ -63,15 +63,15 @@ describe('EventDomainEntity', () => {
       }),
       dateTime: Date.now(),
     } as IEventDomainEntity;
-    eventDomainEntity = new EventEntity(data);
-    jest.spyOn(eventDomainEntity, 'getErrors');
-    jest.spyOn(eventDomainEntity, 'setErrors');
+    eventDomainEntityBase = new EventEntity(data);
+    jest.spyOn(eventDomainEntityBase, 'getErrors');
+    jest.spyOn(eventDomainEntityBase, 'setErrors');
 
     // Act
-    eventDomainEntity.validateData();
+    eventDomainEntityBase.validateData();
 
     // Assert
-    expect(eventDomainEntity.getErrors).not.toBeCalled();
-    expect(eventDomainEntity.setErrors).not.toBeCalled();
+    expect(eventDomainEntityBase.getErrors).not.toBeCalled();
+    expect(eventDomainEntityBase.setErrors).not.toBeCalled();
   });
 });

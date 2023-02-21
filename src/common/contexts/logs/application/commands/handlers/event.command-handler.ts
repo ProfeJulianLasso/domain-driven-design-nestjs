@@ -1,7 +1,7 @@
 import { CommandHandlerBase } from '../../../../../libs/sofka';
 import {
   EventAggregate,
-  EventDomainEntity,
+  EventDomainEntityBase,
   IAddLogPayload,
   IAddLogResponse,
   IEventDomainEntity,
@@ -13,7 +13,7 @@ import { GetHistoryQueryCommand } from '../query';
 import { AddLogWriteCommand } from '../write';
 
 export class EventCommandHandler<
-  E1 extends EventDomainEntity,
+  E1 extends EventDomainEntityBase,
   S1 extends IEventDomainService<E1>,
   P1 extends IGetHistoryPayload,
   R1 extends IGetHistoryResponse<E1>,

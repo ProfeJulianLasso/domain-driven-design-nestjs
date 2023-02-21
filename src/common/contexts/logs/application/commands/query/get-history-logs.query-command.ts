@@ -2,7 +2,7 @@ import { LogQueryCommand } from '.';
 import { CommandBase, ICommand } from '../../../../../libs/sofka';
 import {
   EventAggregate,
-  EventDomainEntity,
+  EventDomainEntityBase,
   IEventDomainService,
   IGetHistoryPayload,
   IGetHistoryResponse,
@@ -10,7 +10,7 @@ import {
 import { GetHistoryLogsUseCase } from '../../use-cases';
 
 export class GetHistoryQueryCommand<
-  E1 extends EventDomainEntity,
+  E1 extends EventDomainEntityBase,
   S1 extends IEventDomainService<E1>,
   P1 extends IGetHistoryPayload,
   R1 extends IGetHistoryResponse<E1>,

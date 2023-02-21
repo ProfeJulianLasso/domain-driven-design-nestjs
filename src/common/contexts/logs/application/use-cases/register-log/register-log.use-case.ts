@@ -4,7 +4,7 @@ import {
   ContextObjectValue,
   DateTimeObjectValue,
   EventAggregate,
-  EventDomainEntity,
+  EventDomainEntityBase,
   EventNameObjectValue,
   IAddLogPayload,
   IAddLogResponse,
@@ -14,7 +14,7 @@ import {
 } from '../../../domain';
 
 export class RegisterLogUseCase<
-  E1 extends EventDomainEntity,
+  E1 extends EventDomainEntityBase,
   S1 extends IEventDomainService<E1>,
   P1 extends IAddLogPayload,
   R1 extends IAddLogResponse<E1>,

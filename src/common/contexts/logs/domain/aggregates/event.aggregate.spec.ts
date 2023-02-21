@@ -2,7 +2,7 @@ import { EventAggregate } from '.';
 import { EventDomainEntityBase } from '../entities';
 import { IEventDomainService } from '../services';
 
-describe('EventDomainEntity', () => {
+describe('EventAggregate', () => {
   let eventAggregate: EventAggregate<
     EventDomainEntityBase,
     IEventDomainService<EventDomainEntityBase>
@@ -22,5 +22,5 @@ describe('EventDomainEntity', () => {
     expect(eventAggregate).toBeDefined();
   });
 
-  // TODO: Falta realizar las pruebas unitarias de EventDomainEntity
+  // TODO: Falta realizar las pruebas unitarias de EventAggregate
 });
