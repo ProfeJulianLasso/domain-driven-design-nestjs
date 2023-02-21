@@ -4,7 +4,7 @@ import {
   DateTimeEndObjectValue,
   DateTimeInitObjectValue,
   EventAggregate,
-  EventDomainEntity,
+  EventDomainEntityBase,
   IEventDomainEntity,
   IEventDomainService,
   IGetHistoryPayload,
@@ -13,32 +13,34 @@ import {
   PageObjectValue,
 } from '../../../domain';
 
+class EventEntity extends EventDomainEntityBase {}
+
 describe('GetHistoryUseCase', () => {
   let getHistoryUseCase: GetHistoryLogsUseCase<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>,
+    EventEntity,
+    IEventDomainService<EventEntity>,
     IGetHistoryPayload,
-    IGetHistoryResponse<EventDomainEntity>,
-    EventAggregate<EventDomainEntity, IEventDomainService<EventDomainEntity>>
+    IGetHistoryResponse<EventEntity>,
+    EventAggregate<EventEntity, IEventDomainService<EventEntity>>
   >;
-  let mockEventService: IEventDomainService<EventDomainEntity>;
+  let mockEventService: IEventDomainService<EventEntity>;
   let mockEventAggregate: EventAggregate<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>
+    EventEntity,
+    IEventDomainService<EventEntity>
   >;
 
   beforeEach(() => {
     mockEventService = {
       getHistory: jest.fn(),
       addLog: jest.fn(),
-    } as IEventDomainService<EventDomainEntity>;
+    } as IEventDomainService<EventEntity>;
     mockEventAggregate = new EventAggregate(mockEventService);
     getHistoryUseCase = new GetHistoryLogsUseCase<
-      EventDomainEntity,
-      IEventDomainService<EventDomainEntity>,
+      EventEntity,
+      IEventDomainService<EventEntity>,
       IGetHistoryPayload,
-      IGetHistoryResponse<EventDomainEntity>,
-      EventAggregate<EventDomainEntity, IEventDomainService<EventDomainEntity>>
+      IGetHistoryResponse<EventEntity>,
+      EventAggregate<EventEntity, IEventDomainService<EventEntity>>
     >(mockEventAggregate);
   });
 
@@ -107,13 +109,13 @@ describe('GetHistoryUseCase', () => {
     // Arrange
     const payload = undefined;
     const dateTime = Date.now();
-    const item1 = new EventDomainEntity({
+    const item1 = new EventEntity({
       context: 'accounts',
       aggregateRoot: 'customer',
       eventName: 'registeredUser',
       dateTime,
     } as IEventDomainEntity);
-    const item2 = new EventDomainEntity({
+    const item2 = new EventEntity({
       context: 'transactions',
       aggregateRoot: 'account',
       eventName: 'registeredDeposit',
@@ -125,7 +127,7 @@ describe('GetHistoryUseCase', () => {
     const dateTimeInitObjectValue = new DateTimeInitObjectValue();
     const dateTimeEndObjectValue = new DateTimeEndObjectValue();
 
-    const stub = new Array<EventDomainEntity>();
+    const stub = new Array<EventEntity>();
     stub.push(item1);
     stub.push(item2);
 
@@ -154,13 +156,13 @@ describe('GetHistoryUseCase', () => {
       dateTimeEnd: Date.now(),
     } as IGetHistoryPayload;
     const dateTime = Date.now();
-    const item1 = new EventDomainEntity({
+    const item1 = new EventEntity({
       context: 'accounts',
       aggregateRoot: 'customer',
       eventName: 'registeredUser',
       dateTime,
     } as IEventDomainEntity);
-    const item2 = new EventDomainEntity({
+    const item2 = new EventEntity({
       context: 'transactions',
       aggregateRoot: 'account',
       eventName: 'registeredDeposit',
@@ -176,7 +178,7 @@ describe('GetHistoryUseCase', () => {
       payload.dateTimeEnd,
     );
 
-    const stub = new Array<EventDomainEntity>();
+    const stub = new Array<EventEntity>();
     stub.push(item1);
     stub.push(item2);
 

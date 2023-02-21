@@ -1,14 +1,14 @@
 import { EventAggregate } from '.';
-import { EventDomainEntity } from '../entities';
+import { EventDomainEntityBase } from '../entities';
 import { IEventDomainService } from '../services';
 
 describe('EventDomainEntity', () => {
   let eventAggregate: EventAggregate<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>
+    EventDomainEntityBase,
+    IEventDomainService<EventDomainEntityBase>
   >;
 
-  let mockEventService: IEventDomainService<EventDomainEntity>;
+  let mockEventService: IEventDomainService<EventDomainEntityBase>;
 
   beforeEach(() => {
     mockEventService = {

@@ -1,4 +1,4 @@
-import { EventDomainEntity } from '../entities';
+import { EventDomainEntityBase } from '../entities';
 import {
   DateTimeEndObjectValue,
   DateTimeInitObjectValue,
@@ -6,7 +6,7 @@ import {
   PageObjectValue,
 } from '../objects-value';
 
-export interface IEventDomainService<E extends EventDomainEntity> {
+export interface IEventDomainService<E extends EventDomainEntityBase> {
   getHistory(
     page?: PageObjectValue,
     length?: LengthObjectValue,

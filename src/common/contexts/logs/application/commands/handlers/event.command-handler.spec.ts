@@ -2,7 +2,7 @@ import { EventCommandHandler } from '.';
 import { IUseCase } from '../../../../../libs/sofka';
 import {
   EventAggregate,
-  EventDomainEntity,
+  EventDomainEntityBase,
   IAddLogPayload,
   IAddLogResponse,
   IEventDomainService,
@@ -11,20 +11,22 @@ import {
 } from '../../../domain';
 import { LogQueryCommand } from '../query';
 
+class EventEntity extends EventDomainEntityBase {}
+
 describe('EventCommandHandler', () => {
   let eventCommandHandler: EventCommandHandler<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>,
+    EventEntity,
+    IEventDomainService<EventEntity>,
     IGetHistoryPayload,
-    IGetHistoryResponse<EventDomainEntity>,
+    IGetHistoryResponse<EventEntity>,
     IAddLogPayload,
-    IAddLogResponse<EventDomainEntity>,
-    EventAggregate<EventDomainEntity, IEventDomainService<EventDomainEntity>>
+    IAddLogResponse<EventEntity>,
+    EventAggregate<EventEntity, IEventDomainService<EventEntity>>
   >;
-  let mockEventService: IEventDomainService<EventDomainEntity>;
+  let mockEventService: IEventDomainService<EventEntity>;
   let eventAggregateRoot: EventAggregate<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>
+    EventEntity,
+    IEventDomainService<EventEntity>
   >;
 
   beforeEach(() => {
@@ -35,7 +37,7 @@ describe('EventCommandHandler', () => {
     eventAggregateRoot = new EventAggregate(mockEventService);
     eventCommandHandler = new EventCommandHandler(
       eventAggregateRoot,
-      EventDomainEntity,
+      EventEntity,
     );
   });
 
@@ -54,7 +56,7 @@ describe('EventCommandHandler', () => {
     };
     const useCase: IUseCase<
       IGetHistoryPayload,
-      IGetHistoryResponse<EventDomainEntity>
+      IGetHistoryResponse<EventEntity>
     > = {
       execute: jest.fn(),
       executeValidations: jest.fn(),
@@ -71,7 +73,7 @@ describe('EventCommandHandler', () => {
     // Act
     const response = await eventCommandHandler.executeCommand<
       IGetHistoryPayload,
-      IGetHistoryResponse<EventDomainEntity>
+      IGetHistoryResponse<EventEntity>
     >(LogQueryCommand.GetHistoryLogs, payload);
 
     // Assert

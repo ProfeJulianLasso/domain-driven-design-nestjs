@@ -3,35 +3,37 @@ import { RegisterLogUseCase } from '.';
 import { ObjectValueException } from '../../../../../libs/sofka';
 import {
   EventAggregate,
-  EventDomainEntity,
+  EventDomainEntityBase,
   IAddLogPayload,
   IAddLogResponse,
   IEventDomainService,
 } from '../../../domain';
 
+class EventEntity extends EventDomainEntityBase {}
+
 describe('RegisterLogUseCase', () => {
   let registerLogUseCase: RegisterLogUseCase<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>,
+    EventEntity,
+    IEventDomainService<EventEntity>,
     IAddLogPayload,
-    IAddLogResponse<EventDomainEntity>,
-    EventAggregate<EventDomainEntity, IEventDomainService<EventDomainEntity>>
+    IAddLogResponse<EventEntity>,
+    EventAggregate<EventEntity, IEventDomainService<EventEntity>>
   >;
-  let mockEventService: IEventDomainService<EventDomainEntity>;
+  let mockEventService: IEventDomainService<EventEntity>;
   let mockEventAggregate: EventAggregate<
-    EventDomainEntity,
-    IEventDomainService<EventDomainEntity>
+    EventEntity,
+    IEventDomainService<EventEntity>
   >;
 
   beforeEach(() => {
     mockEventService = {
       getHistory: jest.fn(),
       addLog: jest.fn().mockImplementation((data) => data),
-    } as IEventDomainService<EventDomainEntity>;
+    } as IEventDomainService<EventEntity>;
     mockEventAggregate = new EventAggregate(mockEventService);
     registerLogUseCase = new RegisterLogUseCase(
       mockEventAggregate,
-      EventDomainEntity,
+      EventEntity,
     );
   });
 

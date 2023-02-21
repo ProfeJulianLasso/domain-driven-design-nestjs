@@ -1,12 +1,14 @@
 import { v4 as uuid } from 'uuid';
-import { EventDomainEntity, IEventDomainEntity } from '.';
+import { EventDomainEntityBase, IEventDomainEntity } from '.';
 import { ObjectValueException } from '../../../../libs/sofka';
 
+class EventEntity extends EventDomainEntityBase {}
+
 describe('EventDomainEntity', () => {
-  let eventDomainEntity: EventDomainEntity;
+  let eventDomainEntity: EventEntity;
 
   beforeEach(() => {
-    eventDomainEntity = new EventDomainEntity({} as IEventDomainEntity);
+    eventDomainEntity = new EventEntity({} as IEventDomainEntity);
   });
 
   it('should be defined', () => {
@@ -22,7 +24,7 @@ describe('EventDomainEntity', () => {
       eventName: '',
       payload: '',
     } as IEventDomainEntity;
-    eventDomainEntity = new EventDomainEntity(data);
+    eventDomainEntity = new EventEntity(data);
     jest.spyOn(eventDomainEntity, 'getErrors');
     jest.spyOn(eventDomainEntity, 'setErrors');
 
@@ -61,7 +63,7 @@ describe('EventDomainEntity', () => {
       }),
       dateTime: Date.now(),
     } as IEventDomainEntity;
-    eventDomainEntity = new EventDomainEntity(data);
+    eventDomainEntity = new EventEntity(data);
     jest.spyOn(eventDomainEntity, 'getErrors');
     jest.spyOn(eventDomainEntity, 'setErrors');
 

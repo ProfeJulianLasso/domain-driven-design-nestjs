@@ -13,7 +13,7 @@ import {
 } from '../objects-value';
 import { IEventDomainEntity } from './interfaces';
 
-export class EventDomainEntity
+export abstract class EventDomainEntityBase
   extends ErrorHandlerForValueObjectsBase
   implements IEventDomainEntity
 {

@@ -1,4 +1,4 @@
-import { EventDomainEntity } from '../entities';
+import { EventDomainEntityBase } from '../entities';
 import {
   DateTimeEndObjectValue,
   DateTimeInitObjectValue,
@@ -8,7 +8,7 @@ import {
 import { IEventDomainService } from '../services';
 
 export class EventAggregate<
-  E extends EventDomainEntity,
+  E extends EventDomainEntityBase,
   S extends IEventDomainService<E>,
 > implements IEventDomainService<E>
 {
