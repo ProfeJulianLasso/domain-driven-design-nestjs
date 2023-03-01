@@ -1,12 +1,12 @@
 import {
-  AggregateRootObjectValue,
-  IdObjectValue,
+  AggregateRootValueObject,
+  EventIdValueObject,
 } from 'src/common/contexts/logs/domain';
 import { EventDomainEntityBase } from '../../../../domain/entities';
 
 export class EventEntity extends EventDomainEntityBase {
-  eventId: IdObjectValue;
-  aggregateRoot: AggregateRootObjectValue;
+  eventId: EventIdValueObject;
+  aggregateRoot: AggregateRootValueObject;
   context: string;
   eventName: string;
   payload?: string;

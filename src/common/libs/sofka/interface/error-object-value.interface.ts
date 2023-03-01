@@ -1,4 +1,4 @@
-export interface IErrorObjectValue {
+export interface IErrorValueObject {
   field: string;
   message: string;
 }

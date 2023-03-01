@@ -1,25 +1,21 @@
 import { EventDomainEntityBase } from '../entities';
 import {
-  DateTimeEndObjectValue,
-  DateTimeInitObjectValue,
-  LengthObjectValue,
-  PageObjectValue,
-} from '../objects-value';
+  DateTimeEndValueObject,
+  DateTimeInitValueObject,
+  LengthValueObject,
+  PageValueObject,
+} from '../value-objects';
 import { IEventDomainService } from '../services';
 
-export class EventAggregate<
-  E extends EventDomainEntityBase,
-  S extends IEventDomainService<E>,
-> implements IEventDomainService<E>
-{
-  constructor(private readonly eventService: S) {}
+export class EventAggregateRoot implements IEventDomainService {
+  constructor(private readonly eventService: IEventDomainService) {}
 
   async getHistory(
-    page?: PageObjectValue,
-    length?: LengthObjectValue,
-    dateTimeInit?: DateTimeInitObjectValue,
-    dateTimeEnd?: DateTimeEndObjectValue,
-  ): Promise<E[] | null> {
+    page?: PageValueObject,
+    length?: LengthValueObject,
+    dateTimeInit?: DateTimeInitValueObject,
+    dateTimeEnd?: DateTimeEndValueObject,
+  ): Promise<EventDomainEntityBase[] | null> {
     return await this.eventService.getHistory(
       page,
       length,
@@ -28,7 +24,9 @@ export class EventAggregate<
     );
   }
 
-  async addLog(log: E): Promise<E | null> {
+  async addLog(
+    log: EventDomainEntityBase,
+  ): Promise<EventDomainEntityBase | null> {
     return await this.eventService.addLog(log);
   }
 }

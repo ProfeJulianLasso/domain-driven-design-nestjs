@@ -1,6 +1,5 @@
-import { EventDomainEntityBase } from '../../../domain';
+import { EventDomainEntityBase } from '../../entities';
 
-export interface IAddLogResponse<E extends EventDomainEntityBase> {
-  success: boolean;
-  data: E | null;
+export interface IAddLogResponse {
+  data: EventDomainEntityBase | null;
 }

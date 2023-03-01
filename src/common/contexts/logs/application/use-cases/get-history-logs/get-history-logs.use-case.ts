@@ -1,58 +1,57 @@
 import {
-  ErrorHandlerForValueObjectsBase,
-  IUseCase,
-  ObjectValueException,
-} from '../../../../../libs/sofka';
-import {
-  DateTimeEndObjectValue,
-  DateTimeInitObjectValue,
-  EventAggregate,
+  DateTimeEndValueObject,
+  DateTimeInitValueObject,
+  EventAggregateRoot,
   EventDomainEntityBase,
   IEventDomainService,
-  IGetHistoryPayload,
+  IGetHistoryCommand,
   IGetHistoryResponse,
-  LengthObjectValue,
-  PageObjectValue,
+  LengthValueObject,
+  PageValueObject,
 } from '../../../domain';
+import {
+  ValueObjectErrorHandler,
+  IUseCase,
+  ValueObjectException,
+} from '../../../../../libs/sofka';
 
 export class GetHistoryLogsUseCase<
-    E1 extends EventDomainEntityBase,
-    S1 extends IEventDomainService<E1>,
-    P1 extends IGetHistoryPayload,
-    R1 extends IGetHistoryResponse<E1>,
-    A1 extends EventAggregate<E1, S1>,
+    CommandType extends IGetHistoryCommand = IGetHistoryCommand,
   >
-  extends ErrorHandlerForValueObjectsBase
-  implements IUseCase<P1, R1>
+  extends ValueObjectErrorHandler
+  implements IUseCase<CommandType, IGetHistoryResponse>
 {
-  constructor(private readonly eventAggregateRoot: A1) {
+  private readonly eventAggregateRoot: EventAggregateRoot;
+
+  constructor(private readonly eventService: IEventDomainService) {
     super();
+    this.eventAggregateRoot = new EventAggregateRoot(this.eventService);
   }
 
-  async execute(payload?: P1): Promise<R1> {
+  async execute(command?: CommandType): Promise<IGetHistoryResponse> {
     const { page, length, dateTimeInit, dateTimeEnd } =
-      this.executeValidations(payload);
+      this.executeValidations(command);
     let data = await this.eventAggregateRoot.getHistory(
       page,
       length,
       dateTimeInit,
       dateTimeEnd,
     );
-    if (data === null) data = new Array<E1>();
-    const result = { ...payload, data } as R1;
-    return result;
+    if (data === null || data === undefined)
+      data = new Array<EventDomainEntityBase>();
+    return { ...command, data } as IGetHistoryResponse;
   }
 
-  executeValidations(payload?: P1): {
-    page: PageObjectValue;
-    length: LengthObjectValue;
-    dateTimeInit: DateTimeInitObjectValue;
-    dateTimeEnd: DateTimeEndObjectValue;
+  executeValidations(command?: CommandType): {
+    page: PageValueObject;
+    length: LengthValueObject;
+    dateTimeInit: DateTimeInitValueObject;
+    dateTimeEnd: DateTimeEndValueObject;
   } {
-    const page = new PageObjectValue(payload?.page);
-    const length = new LengthObjectValue(payload?.length);
-    const dateTimeInit = new DateTimeInitObjectValue(payload?.dateTimeInit);
-    const dateTimeEnd = new DateTimeEndObjectValue(payload?.dateTimeEnd);
+    const page = new PageValueObject(command?.page);
+    const length = new LengthValueObject(command?.length);
+    const dateTimeInit = new DateTimeInitValueObject(command?.dateTimeInit);
+    const dateTimeEnd = new DateTimeEndValueObject(command?.dateTimeEnd);
 
     if (page && page.hasErrors()) this.setErrors(page.getErrors());
 
@@ -65,10 +64,11 @@ export class GetHistoryLogsUseCase<
       this.setErrors(dateTimeEnd.getErrors());
 
     if (this.hasErrors() === true)
-      throw new ObjectValueException(
+      throw new ValueObjectException(
         'Hay algunos errores en la información del paginador',
         this.getErrors(),
       );
+
     return { page, length, dateTimeInit, dateTimeEnd };
   }
 }

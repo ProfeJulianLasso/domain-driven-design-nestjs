@@ -1,1 +1,1 @@
-export * from './event-domain-entity.interface';
+export * from './event.domain-entity.interface';

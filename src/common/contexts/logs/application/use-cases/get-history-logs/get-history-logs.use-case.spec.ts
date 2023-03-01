@@ -1,47 +1,30 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GetHistoryLogsUseCase } from '.';
 import {
-  DateTimeEndObjectValue,
-  DateTimeInitObjectValue,
-  EventAggregate,
+  DateTimeEndValueObject,
+  DateTimeInitValueObject,
+  EventAggregateRoot,
   EventDomainEntityBase,
   IEventDomainEntity,
   IEventDomainService,
-  IGetHistoryPayload,
-  IGetHistoryResponse,
-  LengthObjectValue,
-  PageObjectValue,
+  IGetHistoryCommand,
+  LengthValueObject,
+  PageValueObject,
 } from '../../../domain';
 
-class EventEntity extends EventDomainEntityBase {}
-
 describe('GetHistoryUseCase', () => {
-  let getHistoryUseCase: GetHistoryLogsUseCase<
-    EventEntity,
-    IEventDomainService<EventEntity>,
-    IGetHistoryPayload,
-    IGetHistoryResponse<EventEntity>,
-    EventAggregate<EventEntity, IEventDomainService<EventEntity>>
-  >;
-  let mockEventService: IEventDomainService<EventEntity>;
-  let mockEventAggregate: EventAggregate<
-    EventEntity,
-    IEventDomainService<EventEntity>
-  >;
+  let getHistoryUseCase: GetHistoryLogsUseCase<IGetHistoryCommand>;
+  let mockEventService: IEventDomainService;
+  let mockEventAggregate: EventAggregateRoot;
 
   beforeEach(() => {
     mockEventService = {
       getHistory: jest.fn(),
       addLog: jest.fn(),
-    } as IEventDomainService<EventEntity>;
-    mockEventAggregate = new EventAggregate(mockEventService);
-    getHistoryUseCase = new GetHistoryLogsUseCase<
-      EventEntity,
-      IEventDomainService<EventEntity>,
-      IGetHistoryPayload,
-      IGetHistoryResponse<EventEntity>,
-      EventAggregate<EventEntity, IEventDomainService<EventEntity>>
-    >(mockEventAggregate);
+    } as IEventDomainService;
+    mockEventAggregate = new EventAggregateRoot(mockEventService);
+    getHistoryUseCase = new GetHistoryLogsUseCase<IGetHistoryCommand>(
+      mockEventAggregate,
+    );
   });
 
   it('should be defined', () => {
@@ -53,10 +36,10 @@ describe('GetHistoryUseCase', () => {
     const payload = undefined;
     const stub = null;
     const expected = { data: [] };
-    const pageObjectValue = new PageObjectValue();
-    const lengthObjectValue = new LengthObjectValue();
-    const dateTimeInitObjectValue = new DateTimeInitObjectValue();
-    const dateTimeEndObjectValue = new DateTimeEndObjectValue();
+    const pageValueObject = new PageValueObject();
+    const lengthValueObject = new LengthValueObject();
+    const dateTimeInitValueObject = new DateTimeInitValueObject();
+    const dateTimeEndValueObject = new DateTimeEndValueObject();
     jest.spyOn(mockEventAggregate, 'getHistory').mockResolvedValue(stub);
 
     // Act
@@ -64,10 +47,10 @@ describe('GetHistoryUseCase', () => {
 
     // Assert
     expect(mockEventAggregate.getHistory).toBeCalledWith(
-      pageObjectValue,
-      lengthObjectValue,
-      dateTimeInitObjectValue,
-      dateTimeEndObjectValue,
+      pageValueObject,
+      lengthValueObject,
+      dateTimeInitValueObject,
+      dateTimeEndValueObject,
     );
     expect(result).toEqual(expected);
   });
@@ -79,15 +62,15 @@ describe('GetHistoryUseCase', () => {
       length: 5,
       dateTimeInit: Date.now() - 120,
       dateTimeEnd: Date.now(),
-    } as IGetHistoryPayload;
+    } as IGetHistoryCommand;
     const stub = null;
     const expected = { ...payload, data: [] };
-    const pageObjectValue = new PageObjectValue(payload.page);
-    const lengthObjectValue = new LengthObjectValue(payload.length);
-    const dateTimeInitObjectValue = new DateTimeInitObjectValue(
+    const pageValueObject = new PageValueObject(payload.page);
+    const lengthValueObject = new LengthValueObject(payload.length);
+    const dateTimeInitValueObject = new DateTimeInitValueObject(
       payload.dateTimeInit,
     );
-    const dateTimeEndObjectValue = new DateTimeEndObjectValue(
+    const dateTimeEndValueObject = new DateTimeEndValueObject(
       payload.dateTimeEnd,
     );
     jest.spyOn(mockEventAggregate, 'getHistory').mockResolvedValue(stub);
@@ -97,10 +80,10 @@ describe('GetHistoryUseCase', () => {
 
     // Assert
     expect(mockEventAggregate.getHistory).toBeCalledWith(
-      pageObjectValue,
-      lengthObjectValue,
-      dateTimeInitObjectValue,
-      dateTimeEndObjectValue,
+      pageValueObject,
+      lengthValueObject,
+      dateTimeInitValueObject,
+      dateTimeEndValueObject,
     );
     expect(result).toEqual(expected);
   });
@@ -109,25 +92,25 @@ describe('GetHistoryUseCase', () => {
     // Arrange
     const payload = undefined;
     const dateTime = Date.now();
-    const item1 = new EventEntity({
+    const item1 = new EventDomainEntityBase({
       context: 'accounts',
       aggregateRoot: 'customer',
       eventName: 'registeredUser',
       dateTime,
     } as IEventDomainEntity);
-    const item2 = new EventEntity({
+    const item2 = new EventDomainEntityBase({
       context: 'transactions',
       aggregateRoot: 'account',
       eventName: 'registeredDeposit',
       dateTime,
     } as IEventDomainEntity);
 
-    const pageObjectValue = new PageObjectValue();
-    const lengthObjectValue = new LengthObjectValue();
-    const dateTimeInitObjectValue = new DateTimeInitObjectValue();
-    const dateTimeEndObjectValue = new DateTimeEndObjectValue();
+    const pageValueObject = new PageValueObject();
+    const lengthValueObject = new LengthValueObject();
+    const dateTimeInitValueObject = new DateTimeInitValueObject();
+    const dateTimeEndValueObject = new DateTimeEndValueObject();
 
-    const stub = new Array<EventEntity>();
+    const stub = new Array<EventDomainEntityBase>();
     stub.push(item1);
     stub.push(item2);
 
@@ -139,10 +122,10 @@ describe('GetHistoryUseCase', () => {
 
     // Assert
     expect(mockEventAggregate.getHistory).toBeCalledWith(
-      pageObjectValue,
-      lengthObjectValue,
-      dateTimeInitObjectValue,
-      dateTimeEndObjectValue,
+      pageValueObject,
+      lengthValueObject,
+      dateTimeInitValueObject,
+      dateTimeEndValueObject,
     );
     expect(result).toEqual(expected);
   });
@@ -154,31 +137,31 @@ describe('GetHistoryUseCase', () => {
       length: 5,
       dateTimeInit: Date.now() - 120,
       dateTimeEnd: Date.now(),
-    } as IGetHistoryPayload;
+    } as IGetHistoryCommand;
     const dateTime = Date.now();
-    const item1 = new EventEntity({
+    const item1 = new EventDomainEntityBase({
       context: 'accounts',
       aggregateRoot: 'customer',
       eventName: 'registeredUser',
       dateTime,
     } as IEventDomainEntity);
-    const item2 = new EventEntity({
+    const item2 = new EventDomainEntityBase({
       context: 'transactions',
       aggregateRoot: 'account',
       eventName: 'registeredDeposit',
       dateTime,
     } as IEventDomainEntity);
 
-    const pageObjectValue = new PageObjectValue(payload.page);
-    const lengthObjectValue = new LengthObjectValue(payload.length);
-    const dateTimeInitObjectValue = new DateTimeInitObjectValue(
+    const pageValueObject = new PageValueObject(payload.page);
+    const lengthValueObject = new LengthValueObject(payload.length);
+    const dateTimeInitValueObject = new DateTimeInitValueObject(
       payload.dateTimeInit,
     );
-    const dateTimeEndObjectValue = new DateTimeEndObjectValue(
+    const dateTimeEndValueObject = new DateTimeEndValueObject(
       payload.dateTimeEnd,
     );
 
-    const stub = new Array<EventEntity>();
+    const stub = new Array<EventDomainEntityBase>();
     stub.push(item1);
     stub.push(item2);
 
@@ -190,10 +173,10 @@ describe('GetHistoryUseCase', () => {
 
     // Assert
     expect(mockEventAggregate.getHistory).toBeCalledWith(
-      pageObjectValue,
-      lengthObjectValue,
-      dateTimeInitObjectValue,
-      dateTimeEndObjectValue,
+      pageValueObject,
+      lengthValueObject,
+      dateTimeInitValueObject,
+      dateTimeEndValueObject,
     );
     expect(result).toEqual(expected);
   });

@@ -3,18 +3,16 @@
  *
  * @export
  * @interface IUseCase
- * @template P - Type of input payload
- * @template A - Type of response
+ * @template CommandType - Type of input payload
+ * @template ResponseType - Type of response
  */
-export interface IUseCase<P, A> {
+export interface IUseCase<CommandType, ResponseType> {
   /**
    * Executes the use case
    *
-   * @param {P} [payload] - Input payload for the use case, if applicable
-   * @return {*}  {A} - Output data type
+   * @param {CommandType} [command] - Input payload for the use case, if applicable
+   * @return {ResponseType} - Output data type
    * @memberof IUseCase
    */
-  execute(payload?: P): Promise<A>;
-
-  executeValidations(payload?: P): any;
+  execute(command?: CommandType): Promise<ResponseType>;
 }

@@ -1,47 +1,28 @@
 import { IUseCase } from '../../../../../libs/sofka';
 import {
-  AggregateRootObjectValue,
-  ContextObjectValue,
-  DateTimeObjectValue,
-  EventAggregate,
+  EventAggregateRoot,
   EventDomainEntityBase,
-  EventNameObjectValue,
-  IAddLogPayload,
+  IAddLogCommand,
   IAddLogResponse,
-  IEventDomainEntity,
   IEventDomainService,
-  PayloadObjectValue,
 } from '../../../domain';
 
-export class RegisterLogUseCase<
-  E1 extends EventDomainEntityBase,
-  S1 extends IEventDomainService<E1>,
-  P1 extends IAddLogPayload,
-  R1 extends IAddLogResponse<E1>,
-  A1 extends EventAggregate<E1, S1>,
-> implements IUseCase<P1, R1>
+export class RegisterLogUseCase<CommandType extends IAddLogCommand>
+  implements IUseCase<CommandType, IAddLogResponse>
 {
-  constructor(
-    private readonly eventAggregateRoot: A1,
-    private readonly eventEntity: { new (args: IEventDomainEntity): E1 },
-  ) {}
+  private readonly eventAggregateRoot: EventAggregateRoot;
 
-  async execute(payload: P1): Promise<R1> {
-    const entity = this.executeValidations(payload);
-    const data = await this.eventAggregateRoot.addLog(entity);
-    const result = { success: true, data } as R1;
-    return result;
+  constructor(private readonly eventService: IEventDomainService) {
+    this.eventAggregateRoot = new EventAggregateRoot(this.eventService);
   }
 
-  executeValidations(payload: P1): E1 {
-    const entity = new this.eventEntity({
-      aggregateRoot: new AggregateRootObjectValue(payload.aggregateRoot),
-      context: new ContextObjectValue(payload.context),
-      eventName: new EventNameObjectValue(payload.eventName),
-      payload: new PayloadObjectValue(payload.payload),
-      dateTime: new DateTimeObjectValue(payload.dateTime),
-    });
-    entity.validateData();
-    return entity;
+  async execute(command: CommandType): Promise<IAddLogResponse> {
+    const entity = this.executeValidations(command);
+    const data = await this.eventAggregateRoot.addLog(entity);
+    return { data } as IAddLogResponse;
+  }
+
+  executeValidations(command: CommandType): EventDomainEntityBase {
+    return new EventDomainEntityBase({ ...command }).validateData();
   }
 }
